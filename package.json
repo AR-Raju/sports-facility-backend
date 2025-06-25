@@ -1,18 +1,29 @@
 {
-  "name": "sports-booking-backend",
-  "version": "0.1.0",
-  "private": true,
+  "name": "sports-facility-booking-backend",
+  "version": "1.0.0",
+  "description": "Sports Facility Booking Platform Backend API",
+  "main": "dist/server.js",
   "scripts": {
     "build": "tsc",
-    "start": "node ./dist/server.js",
-    "start:prod": "node ./dist/server.js",
-    "start:dev": "ts-node-dev --respawn --transpile-only src/server.ts",
-    "lint": "npx eslint src --ignore-pattern .ts",
-    "lint:fix": "npx eslint src --fix",
-    "prettier": "prettier --ignore-path .gitignore --write \"./src/**/*.+(js|ts|json)\"",
+    "start": "node dist/server.js",
+    "dev": "ts-node-dev --respawn --transpile-only src/server.ts",
+    "lint": "eslint src --ext .ts",
+    "lint:fix": "eslint src --ext .ts --fix",
+    "prettier": "prettier --ignore-path .gitignore --write \"**/*.+(js|ts|json)\"",
     "prettier:fix": "npx prettier --write src",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
+  "keywords": [
+    "sports",
+    "facility",
+    "booking",
+    "nodejs",
+    "express",
+    "mongodb",
+    "typescript"
+  ],
+  "author": "Asikur Rahman",
+  "license": "MIT",
   "dependencies": {
     "@eslint/js": "^9.29.0",
     "axios": "^1.10.0",

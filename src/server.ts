@@ -1,27 +1,30 @@
-import { Server } from "http";
+import type { Server } from "http";
+import mongoose from "mongoose";
 import app from "./app";
 import config from "./app/config";
-
-import mongoose from "mongoose";
 
 let server: Server;
 
 async function main() {
   try {
     await mongoose.connect(config.database_url as string);
+    console.log("Database connected successfully");
 
-    server = app.listen(config.port, () => {
-      console.log(`App is listening on port ${config.port}`);
+    server = app.listen(config.port || 3000, () => {
+      console.log(`App is listening on port ${config.port || 3000}`);
     });
   } catch (err) {
-    console.log(err);
+    console.log("Database connection error:", err);
   }
 }
 
-main();
+// Only start the server if not in Vercel environment
+if (process.env.NODE_ENV !== "production" || !process.env.VERCEL) {
+  main();
+}
 
-process.on("unhandledRejection", () => {
-  console.log("unhandledRejection is detected, shutting down ...");
+process.on("unhandledRejection", (reason) => {
+  console.log("unhandledRejection is detected:", reason);
   if (server) {
     server.close(() => {
       process.exit(1);
@@ -30,7 +33,10 @@ process.on("unhandledRejection", () => {
   process.exit(1);
 });
 
-process.on("uncaughtException", () => {
-  console.log("uncaughtException is detected, shutting down ...");
+process.on("uncaughtException", (error) => {
+  console.log("uncaughtException is detected:", error);
   process.exit(1);
 });
+
+// Export the Express app for Vercel
+export default app;
