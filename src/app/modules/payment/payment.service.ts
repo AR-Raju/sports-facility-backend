@@ -1,13 +1,19 @@
-import axios from "axios"
-import config from "../../config"
-import AppError from "../../errors/AppError"
-import httpStatus from "http-status"
-import type { TPaymentData, TPaymentResponse, TPaymentVerification } from "./payment.interface"
-import { Booking } from "../booking/booking.model"
+import axios from "axios";
+import config from "../../config";
+import AppError from "../../errors/AppError";
+import httpStatus from "http-status";
+import type {
+  TPaymentData,
+  TPaymentResponse,
+  TPaymentVerification,
+} from "./payment.interface";
+import { Booking } from "../booking/booking.model";
 
-const initiatePayment = async (paymentData: TPaymentData): Promise<TPaymentResponse> => {
+const initiatePayment = async (
+  paymentData: TPaymentData,
+): Promise<TPaymentResponse> => {
   try {
-    const transactionId = `TXN-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`
+    const transactionId = `TXN-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
 
     const paymentPayload = {
       store_id: config.ssl_store_id,
@@ -37,61 +43,72 @@ const initiatePayment = async (paymentData: TPaymentData): Promise<TPaymentRespo
       ship_state: "Dhaka",
       ship_postcode: "1000",
       ship_country: "Bangladesh",
-    }
+    };
 
-    const response = await axios.post(config.ssl_payment_url as string, paymentPayload)
+    const response = await axios.post(
+      config.ssl_payment_url as string,
+      paymentPayload,
+    );
 
     if (response.data.status === "SUCCESS") {
       // Update booking with transaction ID
       await Booking.findByIdAndUpdate(paymentData.bookingId, {
         transactionId,
         paymentStatus: "pending",
-      })
+      });
 
       return {
         success: true,
         paymentUrl: response.data.GatewayPageURL,
         transactionId,
         message: "Payment initiated successfully",
-      }
+      };
     } else {
-      throw new AppError(httpStatus.BAD_REQUEST, "Payment initiation failed")
+      throw new AppError(httpStatus.BAD_REQUEST, "Payment initiation failed");
     }
   } catch (error) {
-    throw new AppError(httpStatus.BAD_REQUEST, "Payment service error")
+    throw new AppError(httpStatus.BAD_REQUEST, "Payment service error");
   }
-}
+};
 
-const verifyPayment = async (transactionId: string): Promise<TPaymentVerification> => {
+const verifyPayment = async (
+  transactionId: string,
+): Promise<TPaymentVerification> => {
   try {
     const response = await axios.get(
       `${config.ssl_validation_url}?val_id=${transactionId}&store_id=${config.ssl_store_id}&store_passwd=${config.ssl_store_pass}&format=json`,
-    )
+    );
 
     if (response.data.status === "VALID") {
       // Update booking payment status
-      await Booking.findOneAndUpdate({ transactionId }, { paymentStatus: "paid" })
+      await Booking.findOneAndUpdate(
+        { transactionId },
+        { paymentStatus: "paid" },
+      );
 
       return {
         transactionId,
         status: "success",
         amount: Number.parseFloat(response.data.amount),
-      }
+      };
     } else {
       // Update booking payment status to failed
-      await Booking.findOneAndUpdate({ transactionId }, { paymentStatus: "failed" })
+      await Booking.findOneAndUpdate(
+        { transactionId },
+        { paymentStatus: "failed" },
+      );
 
       return {
         transactionId,
         status: "failed",
-      }
+      };
     }
   } catch (error) {
-    throw new AppError(httpStatus.BAD_REQUEST, "Payment verification failed")
+    throw new AppError(httpStatus.BAD_REQUEST, "Payment verification failed");
   }
-}
+};
 
 export const PaymentServices = {
   initiatePayment,
   verifyPayment,
-}
+};

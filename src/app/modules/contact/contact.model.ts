@@ -1,5 +1,5 @@
-import { Schema, model } from "mongoose"
-import type { TContact } from "./contact.interface"
+import { Schema, model } from "mongoose";
+import type { TContact } from "./contact.interface";
 
 const contactSchema = new Schema<TContact>(
   {
@@ -35,6 +35,6 @@ const contactSchema = new Schema<TContact>(
   {
     timestamps: true,
   },
-)
+);
 
-export const Contact = model<TContact>("Contact", contactSchema)
+export const Contact = model<TContact>("Contact", contactSchema);

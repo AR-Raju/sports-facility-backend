@@ -1,4 +1,4 @@
-import { z } from "zod"
+import { z } from "zod";
 
 const createContactValidationSchema = z.object({
   body: z.object({
@@ -24,8 +24,8 @@ const createContactValidationSchema = z.object({
       })
       .min(10, "Message must be at least 10 characters"),
   }),
-})
+});
 
 export const ContactValidations = {
   createContactValidationSchema,
-}
+};

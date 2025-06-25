@@ -12,7 +12,7 @@ export const formatDate = (date: Date): string => {
 export const checkDataAndRespond = (
   res: Response,
   data: any[],
-  message: string = "No Data Found"
+  message: string = "No Data Found",
 ) => {
   if (!data || data.length === 0) {
     const response: TResponse<[]> = {

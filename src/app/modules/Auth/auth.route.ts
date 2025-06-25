@@ -13,13 +13,13 @@ const router = Router();
 router.post(
   "/register",
   validateRequest(UserValidations.createUserValidationSchema),
-  UserController.createUser
+  UserController.createUser,
 );
 
 router.post(
   "/login",
   validateRequest(AuthValidations.loginValidationSchema),
-  AuthControllers.loginUsers
+  AuthControllers.loginUsers,
 );
 
 router.post("/logout", AuthControllers.logoutUser);
@@ -32,7 +32,7 @@ router.post(
   "/admin/register",
   auth(USER_ROLE.admin),
   validateRequest(UserValidations.createAdminValidationSchema),
-  UserController.createAdmin
+  UserController.createAdmin,
 );
 
 export const AuthRoutes = router;

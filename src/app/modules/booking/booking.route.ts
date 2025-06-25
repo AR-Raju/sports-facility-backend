@@ -11,7 +11,7 @@ router.post(
   "/",
   auth(USER_ROLE.user),
   validateRequest(BookingValidations.createBookingValidationSchema),
-  BookingControllers.createBooking
+  BookingControllers.createBooking,
 );
 
 router.get("/", auth(USER_ROLE.admin), BookingControllers.getAllBookings);
@@ -25,7 +25,7 @@ router.get("/", auth(USER_ROLE.admin), BookingControllers.getAllBookings);
 router.delete(
   "/:id",
   auth(USER_ROLE.user),
-  BookingControllers.cancelBookingByUser
+  BookingControllers.cancelBookingByUser,
 );
 
 export const BookingRoutes = router;

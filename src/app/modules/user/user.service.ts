@@ -10,17 +10,23 @@ const createUserInfoDB = async (payload: TUser) => {
   // Check if user already exists
   const existingUser = await User.isUserExistsByEmail(payload.email);
   if (existingUser) {
-    throw new AppError(httpStatus.CONFLICT, "User already exists with this email!");
+    throw new AppError(
+      httpStatus.CONFLICT,
+      "User already exists with this email!",
+    );
   }
 
   const result = await User.create(payload);
   return result;
 };
 
-const getUserBookings = async (userId: string, query: Record<string, unknown>) => {
+const getUserBookings = async (
+  userId: string,
+  query: Record<string, unknown>,
+) => {
   const bookingQuery = new QueryBuilder(
-    Booking.find({ user: userId }).populate('facility'),
-    query
+    Booking.find({ user: userId }).populate("facility"),
+    query,
   )
     .filter()
     .sort()
@@ -45,7 +51,7 @@ const getUserBookings = async (userId: string, query: Record<string, unknown>) =
 
 const cancelUserBooking = async (bookingId: string, userId: string) => {
   const booking = await Booking.findOne({ _id: bookingId, user: userId });
-  
+
   if (!booking) {
     throw new AppError(httpStatus.NOT_FOUND, "Booking not found!");
   }
@@ -57,8 +63,8 @@ const cancelUserBooking = async (bookingId: string, userId: string) => {
   const result = await Booking.findByIdAndUpdate(
     bookingId,
     { isBooked: BOOKING_STATUS.Canceled },
-    { new: true }
-  ).populate('facility');
+    { new: true },
+  ).populate("facility");
 
   return result;
 };

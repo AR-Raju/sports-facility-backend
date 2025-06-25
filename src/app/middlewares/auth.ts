@@ -12,7 +12,7 @@ const auth = (...requiredRoles: TUserRole[]) => {
     if (!authHeader || !authHeader.startsWith("Bearer ")) {
       throw new AppError(
         httpStatus.UNAUTHORIZED,
-        "You are not authorized user!"
+        "You are not authorized user!",
       );
     }
 
@@ -25,7 +25,7 @@ const auth = (...requiredRoles: TUserRole[]) => {
         if (err) {
           throw new AppError(
             httpStatus.UNAUTHORIZED,
-            "You are not authorized user!"
+            "You are not authorized user!",
           );
         }
 
@@ -33,13 +33,13 @@ const auth = (...requiredRoles: TUserRole[]) => {
         if (requiredRoles && !requiredRoles.includes(role)) {
           throw new AppError(
             httpStatus.UNAUTHORIZED,
-            "You have no access to this route!"
+            "You have no access to this route!",
           );
         }
 
         req.user = decoded as JwtPayload;
         next();
-      }
+      },
     );
   });
 };

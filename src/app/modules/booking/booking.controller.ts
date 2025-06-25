@@ -36,7 +36,7 @@ const checkAvailableBooking = catchAsync(async (req, res, next) => {
 
   const result = await BookingServices.checkAvailabilityIntoDB(
     formattedDate,
-    facility as string
+    facility as string,
   );
 
   sendResponse(res, {

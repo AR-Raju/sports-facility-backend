@@ -48,8 +48,8 @@ const getFacilityByIdFromDB = async (id: string) => {
 const getAdminFacilitiesFromDB = async (query: Record<string, unknown>) => {
   // Admin can see all facilities including deleted ones
   const facilityQuery = new QueryBuilder(
-    Facility.find().select('+isDeleted'),
-    query
+    Facility.find().select("+isDeleted"),
+    query,
   )
     .search(FacilitySearchableFields)
     .filter()
@@ -75,7 +75,7 @@ const getAdminFacilitiesFromDB = async (query: Record<string, unknown>) => {
 
 const updateFacilityIntoDB = async (
   id: string,
-  payload: Partial<TFacility>
+  payload: Partial<TFacility>,
 ) => {
   const facility = await Facility.findById(id);
   if (!facility) {
@@ -99,7 +99,7 @@ const deleteFacilityFromDB = async (id: string) => {
   const result = await Facility.findByIdAndUpdate(
     id,
     { isDeleted: true },
-    { new: true }
+    { new: true },
   );
 
   return result;

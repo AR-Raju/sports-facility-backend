@@ -40,7 +40,7 @@ const userSchema = new Schema<TUser, UserModel>(
         return ret;
       },
     },
-  }
+  },
 );
 
 // pre save middleware/ hook : will work on create/save function
@@ -49,7 +49,7 @@ userSchema.pre("save", async function (next) {
   const user = this;
   user.password = await bcrypt.hash(
     user.password,
-    Number(config.bcrypt_salt_rounds)
+    Number(config.bcrypt_salt_rounds),
   );
   next();
 });
@@ -60,7 +60,7 @@ userSchema.statics.isUserExistsByEmail = async function (email: string) {
 
 userSchema.statics.isPasswordMatched = async function (
   plainTxtPass: string,
-  hashedPass: string
+  hashedPass: string,
 ) {
   return await bcrypt.compare(plainTxtPass, hashedPass);
 };

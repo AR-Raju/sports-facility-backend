@@ -5,7 +5,7 @@ import sendResponse from "../../utils/sendResponse";
 import { UserServices } from "./user.service";
 
 const createUser: RequestHandler = catchAsync(async (req, res, next) => {
-  const userData = { ...req.body, role: 'user' };
+  const userData = { ...req.body, role: "user" };
   const result = await UserServices.createUserInfoDB(userData);
 
   sendResponse(res, {
@@ -17,7 +17,7 @@ const createUser: RequestHandler = catchAsync(async (req, res, next) => {
 });
 
 const createAdmin: RequestHandler = catchAsync(async (req, res, next) => {
-  const adminData = { ...req.body, role: 'admin' };
+  const adminData = { ...req.body, role: "admin" };
   const result = await UserServices.createUserInfoDB(adminData);
 
   sendResponse(res, {

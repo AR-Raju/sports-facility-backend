@@ -9,7 +9,7 @@ export interface TBooking {
   facility: Types.ObjectId; // Reference to the booked facility
   payableAmount: number; // Calculated amount payable for the booking
   isBooked: TBookingStatus; // Status of the booking
-  paymentStatus: 'pending' | 'paid' | 'failed';
+  paymentStatus: "pending" | "paid" | "failed";
   transactionId?: string;
 }
 
@@ -22,6 +22,6 @@ export interface BookingModel extends Model<TBooking> {
     facilityId: string,
     date: string,
     startTime: string,
-    endTime: string
+    endTime: string,
   ): Promise<boolean>;
 }

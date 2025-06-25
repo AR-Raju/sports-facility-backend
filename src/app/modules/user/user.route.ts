@@ -6,16 +6,12 @@ import { UserController } from "./user.controller";
 const router = express.Router();
 
 // User dashboard routes
-router.get(
-  "/bookings",
-  auth(USER_ROLE.user),
-  UserController.getUserBookings
-);
+router.get("/bookings", auth(USER_ROLE.user), UserController.getUserBookings);
 
 router.delete(
   "/bookings/:id",
   auth(USER_ROLE.user),
-  UserController.cancelUserBooking
+  UserController.cancelUserBooking,
 );
 
 export const UserRoutes = router;

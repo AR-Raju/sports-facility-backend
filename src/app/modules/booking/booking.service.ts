@@ -6,7 +6,10 @@ import { BOOKING_STATUS, BookingSearchableFields } from "./booking.constant";
 import { TBooking } from "./booking.interface";
 import { Booking } from "./booking.model";
 
-const createBookingIntoDB = async (userId: string, payload: Partial<TBooking>) => {
+const createBookingIntoDB = async (
+  userId: string,
+  payload: Partial<TBooking>,
+) => {
   const { startTime, endTime, facility, date } = payload;
 
   // Check if the facility exists
@@ -14,7 +17,7 @@ const createBookingIntoDB = async (userId: string, payload: Partial<TBooking>) =
   if (!isFacilityExists) {
     throw new AppError(
       httpStatus.NOT_FOUND,
-      "Facility doesn't exist for this booking"
+      "Facility doesn't exist for this booking",
     );
   }
 
@@ -23,13 +26,13 @@ const createBookingIntoDB = async (userId: string, payload: Partial<TBooking>) =
     facility as string,
     date as string,
     startTime as string,
-    endTime as string
+    endTime as string,
   );
 
   if (!isAvailable) {
     throw new AppError(
       httpStatus.CONFLICT,
-      "Time slot is not available for booking"
+      "Time slot is not available for booking",
     );
   }
 
@@ -38,10 +41,14 @@ const createBookingIntoDB = async (userId: string, payload: Partial<TBooking>) =
   // Calculate duration and payable amount
   const startDateTime = new Date(`1970-01-01T${startTime}:00`);
   const endDateTime = new Date(`1970-01-01T${endTime}:00`);
-  const durationInHours = (endDateTime.getTime() - startDateTime.getTime()) / (1000 * 60 * 60);
+  const durationInHours =
+    (endDateTime.getTime() - startDateTime.getTime()) / (1000 * 60 * 60);
 
   if (durationInHours <= 0) {
-    throw new AppError(httpStatus.BAD_REQUEST, "End time must be after start time");
+    throw new AppError(
+      httpStatus.BAD_REQUEST,
+      "End time must be after start time",
+    );
   }
 
   const payableAmount = durationInHours * pricePerHour;
@@ -51,13 +58,13 @@ const createBookingIntoDB = async (userId: string, payload: Partial<TBooking>) =
     user: userId,
     payableAmount,
     isBooked: BOOKING_STATUS.Confirmed,
-    paymentStatus: 'pending',
+    paymentStatus: "pending",
   };
 
   const result = await Booking.create(bookingData);
   const populatedResult = await Booking.findById(result._id)
-    .populate('facility')
-    .populate('user', '-password');
+    .populate("facility")
+    .populate("user", "-password");
 
   return populatedResult;
 };
@@ -65,7 +72,7 @@ const createBookingIntoDB = async (userId: string, payload: Partial<TBooking>) =
 const getAllBookingsByAdminFromDB = async (query: Record<string, unknown>) => {
   const bookingQuery = new QueryBuilder(
     Booking.find().populate("facility").populate("user", "-password"),
-    query
+    query,
   )
     .search(BookingSearchableFields)
     .filter()
@@ -106,11 +113,11 @@ const createAllDaySlots = (slotDuration: number = 2) => {
 const checkAvailabilityIntoDB = async (date: string, facilityId?: string) => {
   const allSlots = createAllDaySlots(2);
 
-  const query: any = { 
+  const query: any = {
     date: { $eq: date },
-    isBooked: { $ne: BOOKING_STATUS.Canceled }
+    isBooked: { $ne: BOOKING_STATUS.Canceled },
   };
-  
+
   if (facilityId) {
     query.facility = facilityId;
   }
@@ -126,7 +133,7 @@ const checkAvailabilityIntoDB = async (date: string, facilityId?: string) => {
     return !bookedSlots.some(
       (bookedSlot) =>
         slot.startTime === bookedSlot.startTime &&
-        slot.endTime === bookedSlot.endTime
+        slot.endTime === bookedSlot.endTime,
     );
   });
 
@@ -146,8 +153,10 @@ const cancelBookingFromDB = async (id: string) => {
   const result = await Booking.findByIdAndUpdate(
     id,
     { isBooked: BOOKING_STATUS.Canceled },
-    { new: true }
-  ).populate('facility').populate('user', '-password');
+    { new: true },
+  )
+    .populate("facility")
+    .populate("user", "-password");
 
   return result;
 };

@@ -16,20 +16,20 @@ router.post(
   "/",
   auth(USER_ROLE.admin),
   validateRequest(FacilityValidations.createFacilityValidationSchema),
-  FacilityControllers.createFacility
+  FacilityControllers.createFacility,
 );
 
 router.put(
   "/:id",
   auth(USER_ROLE.admin),
   validateRequest(FacilityValidations.updateFacilityValidationSchema),
-  FacilityControllers.updateFacility
+  FacilityControllers.updateFacility,
 );
 
 router.delete(
   "/:id",
   auth(USER_ROLE.admin),
-  FacilityControllers.deleteFacility
+  FacilityControllers.deleteFacility,
 );
 
 export const FacilityRoutes = router;
