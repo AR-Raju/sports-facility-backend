@@ -19,12 +19,6 @@ const config = {
   ssl_payment_url: process.env.SSL_PAYMENT_URL,
   ssl_validation_url: process.env.SSL_VALIDATION_URL,
   client_url: process.env.CLIENT_URL,
-  // Additional client URLs for multiple deployments
-  client_urls: [
-    process.env.CLIENT_URL,
-    process.env.CLIENT_URL_STAGING,
-    process.env.CLIENT_URL_PREVIEW,
-  ].filter(Boolean),
 };
 
 export default config;
