@@ -40,7 +40,14 @@ const allowedOrigins = [process.env.CLIENT_URL, "http://localhost:3000"].filter(
 
 app.use(
   cors({
-    origin: allowedOrigins, // Allow requests from the client URL or localhost or all origins
+    origin: function (origin, callback) {
+      // Allow requests with no origin (like Postman)
+      if (!origin || allowedOrigins.includes(origin)) {
+        callback(null, true);
+      } else {
+        callback(new Error("Not allowed by CORS"));
+      }
+    }, // Allow requests from the client URL or localhost or all origins
     credentials: true,
   })
 );
