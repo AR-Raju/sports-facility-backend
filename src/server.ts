@@ -38,5 +38,11 @@ process.on("uncaughtException", (error) => {
   process.exit(1);
 });
 
+// For Vercel serverless functions, we need to handle the database connection differently
+if (process.env.VERCEL) {
+  // Connect to database when the module is loaded
+  mongoose.connect(config.database_url as string).catch(console.error);
+}
+
 // Export the Express app for Vercel
 export default app;

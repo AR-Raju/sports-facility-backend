@@ -8,10 +8,14 @@ import router from "./app/routes";
 
 const app: Application = express();
 
-// Security middleware
-app.use(helmet());
+// Security middleware - adjusted for serverless
+app.use(
+  helmet({
+    crossOriginEmbedderPolicy: false,
+  })
+);
 
-// Rate limiting
+// Rate limiting - adjusted for serverless
 const limiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
   max: 100, // limit each IP to 100 requests per windowMs
@@ -19,6 +23,8 @@ const limiter = rateLimit({
     success: false,
     message: "Too many requests from this IP, please try again later.",
   },
+  standardHeaders: true,
+  legacyHeaders: false,
 });
 
 // Booking specific rate limiting
@@ -29,11 +35,16 @@ const bookingLimiter = rateLimit({
     success: false,
     message: "Too many booking requests, please try again later.",
   },
+  standardHeaders: true,
+  legacyHeaders: false,
 });
 
-app.use(limiter);
+// Apply rate limiting only in production
+if (process.env.NODE_ENV === "production") {
+  app.use(limiter);
+}
 
-// CORS configuration - Fixed for production deployment
+// CORS configuration
 const corsOptions = {
   origin: (
     origin: string | undefined,
@@ -77,7 +88,7 @@ const corsOptions = {
     "Pragma",
   ],
   exposedHeaders: ["Authorization"],
-  optionsSuccessStatus: 200, // Some legacy browsers choke on 204
+  optionsSuccessStatus: 200,
   preflightContinue: false,
 };
 
@@ -88,6 +99,14 @@ app.use(express.json({ limit: "10mb" }));
 app.use(express.urlencoded({ extended: true, limit: "10mb" }));
 
 // Health check route
+app.get("/", (req, res) => {
+  res.status(200).json({
+    success: true,
+    message: "Sports Facility Booking Platform API is running!",
+    timestamp: new Date().toISOString(),
+  });
+});
+
 app.get("/health", (req, res) => {
   res.status(200).json({
     success: true,
@@ -96,8 +115,10 @@ app.get("/health", (req, res) => {
   });
 });
 
-// Apply booking rate limiter to booking routes
-app.use("/api/bookings", bookingLimiter);
+// Apply booking rate limiter to booking routes only in production
+if (process.env.NODE_ENV === "production") {
+  app.use("/api/bookings", bookingLimiter);
+}
 
 // Application routes
 app.use("/api", router);
