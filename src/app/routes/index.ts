@@ -6,7 +6,6 @@ import { checkAvailabilityRoutes } from "../modules/booking/checkAvailability.ro
 import { ContactRoutes } from "../modules/contact/contact.route";
 import { FacilityRoutes } from "../modules/facility/facility.route";
 import { PaymentRoutes } from "../modules/payment/payment.route";
-import { UploadRoutes } from "../modules/upload/upload.route";
 import { UserRoutes } from "../modules/user/user.route";
 
 const router = Router();
@@ -39,10 +38,6 @@ const modulesRoutes = [
   {
     path: "/admin",
     route: AdminRoutes,
-  },
-  {
-    path: "/upload",
-    route: UploadRoutes,
   },
   {
     path: "/payment",

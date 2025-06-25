@@ -1,8 +1,8 @@
 import httpStatus from "http-status";
 import QueryBuilder from "../../builder/QueryBuilder";
 import AppError from "../../errors/AppError";
-import { Booking } from "../booking/booking.model";
 import { BOOKING_STATUS } from "../booking/booking.constant";
+import { Booking } from "../booking/booking.model";
 import { TUser } from "./user.interface";
 import { User } from "./user.model";
 
@@ -12,7 +12,7 @@ const createUserInfoDB = async (payload: TUser) => {
   if (existingUser) {
     throw new AppError(
       httpStatus.CONFLICT,
-      "User already exists with this email!",
+      "User already exists with this email!"
     );
   }
 
@@ -22,11 +22,11 @@ const createUserInfoDB = async (payload: TUser) => {
 
 const getUserBookings = async (
   userId: string,
-  query: Record<string, unknown>,
+  query: Record<string, unknown>
 ) => {
   const bookingQuery = new QueryBuilder(
     Booking.find({ user: userId }).populate("facility"),
-    query,
+    query
   )
     .filter()
     .sort()
@@ -56,14 +56,16 @@ const cancelUserBooking = async (bookingId: string, userId: string) => {
     throw new AppError(httpStatus.NOT_FOUND, "Booking not found!");
   }
 
-  if (booking.isBooked === BOOKING_STATUS.Canceled) {
+  if (
+    booking.isBooked.toLowerCase() === BOOKING_STATUS.Canceled.toLowerCase()
+  ) {
     throw new AppError(httpStatus.BAD_REQUEST, "Booking is already cancelled!");
   }
 
   const result = await Booking.findByIdAndUpdate(
     bookingId,
     { isBooked: BOOKING_STATUS.Canceled },
-    { new: true },
+    { new: true }
   ).populate("facility");
 
   return result;

@@ -8,7 +8,7 @@ import { Booking } from "./booking.model";
 
 const createBookingIntoDB = async (
   userId: string,
-  payload: Partial<TBooking>,
+  payload: Partial<TBooking>
 ) => {
   const { startTime, endTime, facility, date } = payload;
 
@@ -17,22 +17,22 @@ const createBookingIntoDB = async (
   if (!isFacilityExists) {
     throw new AppError(
       httpStatus.NOT_FOUND,
-      "Facility doesn't exist for this booking",
+      "Facility doesn't exist for this booking"
     );
   }
 
   // Check if the time slot is available
   const isAvailable = await Booking.isTimeSlotAvailable(
-    facility as string,
+    facility as unknown as string,
     date as string,
     startTime as string,
-    endTime as string,
+    endTime as string
   );
 
   if (!isAvailable) {
     throw new AppError(
       httpStatus.CONFLICT,
-      "Time slot is not available for booking",
+      "Time slot is not available for booking"
     );
   }
 
@@ -47,7 +47,7 @@ const createBookingIntoDB = async (
   if (durationInHours <= 0) {
     throw new AppError(
       httpStatus.BAD_REQUEST,
-      "End time must be after start time",
+      "End time must be after start time"
     );
   }
 
@@ -72,7 +72,7 @@ const createBookingIntoDB = async (
 const getAllBookingsByAdminFromDB = async (query: Record<string, unknown>) => {
   const bookingQuery = new QueryBuilder(
     Booking.find().populate("facility").populate("user", "-password"),
-    query,
+    query
   )
     .search(BookingSearchableFields)
     .filter()
@@ -133,7 +133,7 @@ const checkAvailabilityIntoDB = async (date: string, facilityId?: string) => {
     return !bookedSlots.some(
       (bookedSlot) =>
         slot.startTime === bookedSlot.startTime &&
-        slot.endTime === bookedSlot.endTime,
+        slot.endTime === bookedSlot.endTime
     );
   });
 
@@ -146,14 +146,16 @@ const cancelBookingFromDB = async (id: string) => {
     throw new AppError(httpStatus.NOT_FOUND, "Booking not found!");
   }
 
-  if (booking.isBooked === BOOKING_STATUS.Canceled) {
+  if (
+    booking.isBooked.toLowerCase() === BOOKING_STATUS.Canceled.toLowerCase()
+  ) {
     throw new AppError(httpStatus.BAD_REQUEST, "Booking is already cancelled!");
   }
 
   const result = await Booking.findByIdAndUpdate(
     id,
     { isBooked: BOOKING_STATUS.Canceled },
-    { new: true },
+    { new: true }
   )
     .populate("facility")
     .populate("user", "-password");
