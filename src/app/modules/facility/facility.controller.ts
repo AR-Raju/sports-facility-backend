@@ -1,7 +1,6 @@
 import httpStatus from "http-status";
 import catchAsync from "../../utils/catchAsync";
 import sendResponse from "../../utils/sendResponse";
-import { checkDataAndRespond } from "../../utils/utils";
 import { FacilityServices } from "./facility.service";
 
 const createFacility = catchAsync(async (req, res, next) => {
@@ -29,6 +28,14 @@ const getAllFacilties = catchAsync(async (req, res, next) => {
 
 const getFacilityById = catchAsync(async (req, res, next) => {
   const { id } = req.params;
+  if (!id) {
+    return sendResponse(res, {
+      statusCode: httpStatus.BAD_REQUEST,
+      success: false,
+      message: "Facility ID is required",
+      data: null,
+    });
+  }
   const result = await FacilityServices.getFacilityByIdFromDB(id);
 
   sendResponse(res, {
@@ -41,6 +48,14 @@ const getFacilityById = catchAsync(async (req, res, next) => {
 
 const updateFacility = catchAsync(async (req, res, next) => {
   const { id } = req.params;
+  if (!id) {
+    return sendResponse(res, {
+      statusCode: httpStatus.BAD_REQUEST,
+      success: false,
+      message: "Facility ID is required",
+      data: null,
+    });
+  }
   const result = await FacilityServices.updateFacilityIntoDB(id, req.body);
 
   sendResponse(res, {
@@ -53,6 +68,14 @@ const updateFacility = catchAsync(async (req, res, next) => {
 
 const deleteFacility = catchAsync(async (req, res, next) => {
   const { id } = req.params;
+  if (!id) {
+    return sendResponse(res, {
+      statusCode: httpStatus.BAD_REQUEST,
+      success: false,
+      message: "Facility ID is required",
+      data: null,
+    });
+  }
   const result = await FacilityServices.deleteFacilityFromDB(id);
 
   sendResponse(res, {

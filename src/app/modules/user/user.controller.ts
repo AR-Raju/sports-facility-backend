@@ -43,6 +43,14 @@ const getUserBookings = catchAsync(async (req, res, next) => {
 
 const cancelUserBooking = catchAsync(async (req, res, next) => {
   const { id } = req.params;
+  if (!id) {
+    return sendResponse(res, {
+      statusCode: httpStatus.BAD_REQUEST,
+      success: false,
+      message: "Booking ID is required",
+      data: null,
+    });
+  }
   const userId = req.user.id;
   const result = await UserServices.cancelUserBooking(id, userId);
 

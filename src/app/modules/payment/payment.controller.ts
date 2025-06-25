@@ -16,6 +16,14 @@ const initiatePayment = catchAsync(async (req, res, next) => {
 
 const verifyPayment = catchAsync(async (req, res, next) => {
   const { transactionId } = req.params;
+  if (!transactionId) {
+    return sendResponse(res, {
+      statusCode: httpStatus.BAD_REQUEST,
+      success: false,
+      message: "Transaction ID is required",
+      data: null,
+    });
+  }
   const result = await PaymentServices.verifyPayment(transactionId);
 
   sendResponse(res, {

@@ -36,7 +36,7 @@ const checkAvailableBooking = catchAsync(async (req, res, next) => {
 
   const result = await BookingServices.checkAvailabilityIntoDB(
     formattedDate,
-    facility as string,
+    facility as string
   );
 
   sendResponse(res, {
@@ -49,6 +49,14 @@ const checkAvailableBooking = catchAsync(async (req, res, next) => {
 
 const cancelBookingByUser = catchAsync(async (req, res, next) => {
   const { id } = req.params;
+  if (!id) {
+    return sendResponse(res, {
+      statusCode: httpStatus.BAD_REQUEST,
+      success: false,
+      message: "Booking ID is required",
+      data: null,
+    });
+  }
   const result = await BookingServices.cancelBookingFromDB(id);
 
   sendResponse(res, {

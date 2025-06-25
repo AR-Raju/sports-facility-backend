@@ -28,6 +28,14 @@ const getAllContacts = catchAsync(async (req, res, next) => {
 
 const markContactAsRead = catchAsync(async (req, res, next) => {
   const { id } = req.params;
+  if (!id) {
+    return sendResponse(res, {
+      statusCode: httpStatus.BAD_REQUEST,
+      success: false,
+      message: "Contact ID is required",
+      data: null,
+    });
+  }
   const result = await ContactServices.markContactAsReadIntoDB(id);
 
   sendResponse(res, {
@@ -40,6 +48,14 @@ const markContactAsRead = catchAsync(async (req, res, next) => {
 
 const deleteContact = catchAsync(async (req, res, next) => {
   const { id } = req.params;
+  if (!id) {
+    return sendResponse(res, {
+      statusCode: httpStatus.BAD_REQUEST,
+      success: false,
+      message: "Contact ID is required",
+      data: null,
+    });
+  }
   const result = await ContactServices.deleteContactFromDB(id);
 
   sendResponse(res, {
