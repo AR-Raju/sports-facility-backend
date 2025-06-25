@@ -36,9 +36,9 @@ app.use(limiter);
 // CORS configuration
 app.use(
   cors({
-    origin: process.env.CLIENT_URL || "http://localhost:3000",
+    origin: process.env.CLIENT_URL || "http://localhost:3000" || "*", // Allow requests from the client URL or localhost
     credentials: true,
-  }),
+  })
 );
 
 // Parser middleware
