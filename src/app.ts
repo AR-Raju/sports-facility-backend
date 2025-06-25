@@ -34,9 +34,15 @@ const bookingLimiter = rateLimit({
 app.use(limiter);
 
 // CORS configuration
+const allowedOrigins = [
+  process.env.CLIENT_URL,
+  "http://localhost:3000",
+  "*",
+].filter((origin): origin is string => typeof origin === "string");
+
 app.use(
   cors({
-    origin: process.env.CLIENT_URL || "*" || "http://localhost:3000", // Allow requests from the client URL or localhost or all origins
+    origin: allowedOrigins, // Allow requests from the client URL or localhost or all origins
     credentials: true,
   })
 );
